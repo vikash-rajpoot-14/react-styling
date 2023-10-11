@@ -8,20 +8,20 @@ import { useRef } from 'react';
 
 
 const AddUser = (props) => {
- const inputnameref = useRef()
- const inputageref = useRef()
-
+  const inputnameref = useRef()
+  const inputageref = useRef()
+  const inputcollegeref = useRef()
   const [error, setError] = useState();
 
   const addUserHandler = (event) => {
     event.preventDefault();
     let enteredUsername = inputnameref.current.value
     let enteredAge = inputageref.current.value
-
-    if (enteredUsername.trim().length === 0 || enteredAge.trim().length === 0) {
+    let enteredcollege = inputcollegeref.current.value
+    if (enteredUsername.trim().length === 0 || enteredAge.trim().length === 0||enteredcollege.trim().length === 0) {
       setError({
         title: 'Invalid input',
-        message: 'Please enter a valid name and age (non-empty values).',
+        message: 'Please enter a valid name and age oor college name(non-empty values).',
       });
       return;
     }
@@ -32,9 +32,10 @@ const AddUser = (props) => {
       });
       return;
     }
-    props.onAddUser(enteredUsername, enteredAge);
+    props.onAddUser(enteredUsername, enteredAge,enteredcollege);
     inputnameref.current.value = "";
-    inputageref.current.value="";
+    inputageref.current.value = "";
+    inputcollegeref.current.value = "";
   };
 
   const errorHandler = () => {
@@ -63,6 +64,12 @@ const AddUser = (props) => {
             id="age"
             type="number"
             ref={inputageref}
+          />
+          <label htmlFor="college">college name</label>
+          <input
+            id="college"
+            type="text"
+            ref={inputcollegeref}
           />
           <Button type="submit">Add User</Button>
         </form>
