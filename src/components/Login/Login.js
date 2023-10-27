@@ -1,8 +1,9 @@
-import React, {  useEffect, useReducer, useState } from 'react';
+import React, {  useContext, useEffect, useReducer, useState } from 'react';
 
 import Card from '../UI/Card/Card';
 import classes from './Login.module.css';
 import Button from '../UI/Button/Button';
+import AuthContext from '../../context/AuthContext';
 
 const emailReducer = (state, action) =>{
    if(action.type ==="email_input"){
@@ -27,7 +28,10 @@ const collegeReducer = (state, action) =>{
    }
 }
 
-const Login = (props) => {
+const Login = () => {
+  const ctx = useContext(AuthContext)
+console.log("ctx",ctx)
+
   const [formIsValid, setFormIsValid] = useState(false);
   const [emailState,dispatchEmail] = useReducer(emailReducer, {value : "", isValid: null})
   const [passwordState,dispatchpassword] = useReducer(passwordReducer, {value : "", isValid: null})
@@ -36,7 +40,6 @@ const Login = (props) => {
 
 
   const emailChangeHandler = (event) => {
-    console.log("emailchange")
     dispatchEmail({type : "email_input", val : event.target.value});
   };
 
@@ -58,14 +61,20 @@ const Login = (props) => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    props.onLogin(emailState, passwordState,collegeState);
+    ctx.onLogin(emailState, passwordState,collegeState);
   };
 
   useEffect(()=>{
-
-    setFormIsValid(
-      passwordState.value.trim().length > 6 && emailState.value.includes('@') && collegeState.value.trim().length>3
-    );
+    const identifier = setTimeout(()=>{
+      // console.log("timer start")
+      setFormIsValid(
+        passwordState.value.trim().length > 6 && emailState.value.includes('@') && collegeState.value.trim().length>3
+      );
+    },500)
+    return ()=>{
+      // console.log("clean up",identifier)
+      clearTimeout(identifier);
+    }
   },[passwordState.value,emailState.value,collegeState.value])
 
   return (
